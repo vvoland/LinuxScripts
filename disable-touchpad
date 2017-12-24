@@ -1,0 +1,2 @@
+#!/bin/bash
+xinput -disable $(xinput -list | grep TouchPad | cut -d" " -f21 | cut -d"	" -f2 | cut -d"=" -f2)
