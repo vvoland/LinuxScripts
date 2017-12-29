@@ -150,8 +150,8 @@ def main():
 			output_on(hdmi, True)
 			output_on(vga, False, ['--left-of', hdmi.id])
 		elif laptop and vga:
-			output_on(laptop, False)	
-			output_on(vga, True, ['--above', laptop.id])
+			output_on(laptop, True)	
+			output_on(vga, False, ['--left-of', laptop.id])
 		elif laptop and hdmi:
 			output_on(laptop, False)	
 			output_on(hdmi, True, ['--above', laptop.id])
