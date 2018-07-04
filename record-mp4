@@ -1,0 +1,31 @@
+#!/bin/bash
+FFMPEG_PID=$(pidof ffmpeg)
+if [ $? -eq 0 ]
+then
+    kill $FFMPEG_PID
+    exit
+fi
+
+FPS=15
+FILE=$(mktemp -t recordmp4.XXXXXXXXXXXX.mp4)
+FILENAME=$(basename $FILE)
+
+COORDINATES=$(xrectsel "-video_size %wx%h -i $DISPLAY+%x,%y")
+if [ $? -ne 0 ]; then exit; fi
+
+ERROR=$(ffmpeg -y -f x11grab $COORDINATES -framerate $FPS "$FILE")
+if [[ $? -ne 0 && $? -ne 255 ]]
+then
+    notify-send "Recording failed. $ERROR"
+    exit
+fi
+
+TARGET_FILE=$(zenity --file-selection --file-filter='MP4 (.mp4) | *.mp4' --save --filename=$FILENAME --confirm-overwrite)
+if [ $? -ne 0 ]
+then
+    rm $FILE
+    exit
+fi
+
+mv $FILE $TARGET_FILE
+notify-send "Saved as $TARGET_FILE"
