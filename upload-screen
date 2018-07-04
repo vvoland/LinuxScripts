@@ -1,0 +1,31 @@
+#!/bin/bash
+
+USAGE="upload-screen <filename>"
+[ ! $# -ge 1 ] && echo $USAGE && echo "No file provided!" && exit 1
+
+FILE=$1
+[ ! -f "$FILE" ] && echo $USAGE && echo "File does not exist!" && exit 2
+
+source config.sh
+FILENAME=$(basename $FILE)
+TARGET_URL="https://$REMOTE_HOST/$SCREENSHOTS_DIR/$FILENAME"
+
+echo $TARGET_URL | xclip -selection clipboard -i
+
+ftp -n $REMOTE_HOST <<END_SCRIPT
+quote USER $SCREENSHOTS_USER
+quote PASS $SCREENSHOTS_PASSWORD
+cd $SCREENSHOTS_DIR
+binary
+put $FILE $FILENAME
+bye
+END_SCRIPT
+
+STATUS=$?
+if [ $STATUS != "0" ]
+then
+    echo "FTP failed!"
+    echo 3
+fi
+echo "Uploaded $FILENAME!"
+exit 0
