@@ -1,0 +1,11 @@
+#!/bin/bash
+USAGE="post-scrot <filename> [noupload]"
+[ -z "$1" ] && echo $USAGE && exit 1
+[ ! -f "$1" ] && echo "File $1 does not exist" && exit 2
+
+if [ "$2" == "noupload" ]
+then
+    xclip -selection clipboard -t image/png -i $1
+else
+    upload-screen $1
+fi

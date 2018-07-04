@@ -1,0 +1,5 @@
+#!/bin/bash
+ARGS=$1
+SCREENSHOTS_DIR="$HOME/screenshots"
+FILE=$(uuidgen)
+scrot $SCREENSHOTS_DIR/$FILE.png -s -e "post-scrot \$f $ARGS"
