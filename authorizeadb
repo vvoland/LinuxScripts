@@ -1,3 +1,4 @@
+#!/bin/bash
 set -x
 adb shell 'echo "persist.service.adb.enable=1" >> default.prop'
 adb shell 'echo "persist.service.debuggable=1" >> default.prop'
