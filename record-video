@@ -9,7 +9,7 @@ then
     exit
 fi
 
-FPS=15
+FPS=40
 FILE=$(mktemp -t record$FORMAT.XXXXXXXXXXXX.$FORMAT)
 FILENAME=$(basename $FILE)
 

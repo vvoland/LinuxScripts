@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ ! -f /ramdisk/unity ]
+then
+    unity-settings-daemon &
+    touch /ramdisk/unity
+    sleep 0.5
+    i3 restart
+    set-wallpaper
+    sleep 0.1
+    monitors.py
+fi
