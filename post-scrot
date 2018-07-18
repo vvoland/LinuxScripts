@@ -7,5 +7,5 @@ if [ "$2" == "noupload" ]
 then
     xclip -selection clipboard -t image/png -i $1
 else
-    upload-screen $1
+    upload-media $1
 fi

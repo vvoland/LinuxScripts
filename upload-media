@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="upload-screen <filename>"
+USAGE="upload-media <filename>"
 [ ! $# -ge 1 ] && echo $USAGE && echo "No file provided!" && exit 1
 
 FILE=$1
@@ -12,12 +12,11 @@ TARGET_URL="https://$REMOTE_HOST/$SCREENSHOTS_DIR/$FILENAME"
 
 echo $TARGET_URL | xclip -selection clipboard -i
 
-ftp -n $REMOTE_HOST <<END_SCRIPT
-quote USER $SCREENSHOTS_USER
-quote PASS $SCREENSHOTS_PASSWORD
+
+SSHPASS=$SCREENSHOTS_PASSWORD sshpass -e sftp $SCREENSHOTS_USER@$REMOTE_HOST <<END_SCRIPT
 cd $SCREENSHOTS_DIR
-binary
 put $FILE $FILENAME
+chmod 644 $FILENAME
 bye
 END_SCRIPT
 

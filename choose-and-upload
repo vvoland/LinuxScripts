@@ -1,0 +1,11 @@
+#!/bin/bash
+FILE=$(zenity --file-selection)
+if [ $? -eq 0 ]
+then
+    upload-media $FILE
+    MESSAGE="Uploading $FILE failed"
+    [ $? -eq 0 ] && MESSAGE="$FILE upload success"
+
+    notify-send "$MESSAGE"
+
+fi
