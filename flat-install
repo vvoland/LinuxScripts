@@ -1,0 +1,40 @@
+#!/bin/bash
+
+function error()
+{
+    echo "$*" >&2
+}
+
+[ -z "$1" ] && error "usage: $0 <keyword>" && exit 1
+keyword=$1
+
+export LC_ALL=C
+output=$(flatpak search "$keyword" | head -n +2 | grep "$keyword")
+count=$(echo "$output" | wc -l)
+
+if [[ $count -eq 0 || -z "$output" ]]
+then
+    error "No packages found"
+    exit 2
+elif [ $count -gt 1 ]
+then
+    echo "Keyword ambiguous. Multiple packages found:"
+    echo "$output"
+    exit 2
+else
+    package=$(echo "$output" | cut -f 1)
+    version=$(echo "$output" | cut -f 2)
+    repo=$(echo "$output" | cut -f 3)
+    desc=$(echo "$output" | cut -f 4)
+
+    echo "Found $package version $version in $repo"
+    echo "Description: $desc"
+
+    read -p "Install it? [y/N] " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        flatpak install "$repo" "$package"
+    else
+        exit 0
+    fi
+fi
