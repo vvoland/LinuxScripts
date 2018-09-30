@@ -1,6 +1,7 @@
 #!/bin/bash
 [ -z $1 ] && echo "usage: record-video <format>" && exit 1
 FORMAT=$1
+EXTRA_FLAGS=$2
 trap "pkill ffmpeg" INT
 FFMPEG_PID=$(pidof ffmpeg)
 if [ $? -eq 0 ]
@@ -13,10 +14,11 @@ FPS=40
 FILE=$(mktemp -t record$FORMAT.XXXXXXXXXXXX.$FORMAT)
 FILENAME=$(basename $FILE)
 
-COORDINATES=$(xrectsel "-video_size %wx%h -i $DISPLAY+%x,%y")
+COORDINATES=$(xrectsel "-video_size %[2]wx%[2]h -i $DISPLAY+%x,%y")
 if [ $? -ne 0 ]; then exit; fi
 
-ERROR=$(ffmpeg -loglevel quiet -y -f x11grab $COORDINATES -framerate $FPS "$FILE")
+LOGLEVEL="-loglevel quiet"
+ERROR=$(ffmpeg $LOGLEVEL -y -f x11grab $COORDINATES $EXTRA_FLAGS -framerate $FPS "$FILE")
 if [[ $? -ne 0 && $? -ne 255 ]]
 then
     notify-send "Recording failed. $ERROR"

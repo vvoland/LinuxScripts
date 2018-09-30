@@ -1,2 +1,2 @@
 #!/bin/bash
-record-video mp4
+record-video mp4 "-profile:v main -pix_fmt yuv420p"
