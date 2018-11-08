@@ -146,7 +146,8 @@ def main():
         output_on(outputs[0], True)
     else:
         if hdmi and vga:
-            output_off(laptop)
+            if laptop:
+                output_off(laptop)
             output_on(hdmi, True)
             output_on(vga, False, ['--left-of', hdmi.id])
         elif laptop and vga:
