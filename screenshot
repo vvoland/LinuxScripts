@@ -1,5 +1,28 @@
 #!/bin/bash
 ARGS=$1
-SCREENSHOTS_DIR="$HOME/screenshots"
 FILE=$(uuidgen)
-scrot $SCREENSHOTS_DIR/$FILE.png -s -e "post-scrot \$f $ARGS"
+
+source config.sh
+if [ -z "$SCREENSHOTS_LOCAL_DIR" ]
+then
+    SCREENSHOTS_LOCAL_DIR="/tmp/"
+fi
+if [ -z "$SCREENSHOTS_BACKEND" ]
+then
+    SCREENSHOTS_BACKEND="scrot"
+fi
+
+FILE_PATH="${SCREENSHOTS_LOCAL_DIR}/${FILE}.png"
+
+case "$SCREENSHOTS_BACKEND" in
+    "scrot")
+        scrot "$FILE_PATH" -s -e "post-screenshot \$f $ARGS"
+        ;;
+    "gnome")
+        gnome-screenshot -a -f "$FILE_PATH"
+        if [ -f "$FILE_PATH" ]
+        then
+            post-screenshot "$FILE_PATH" $ARGS
+        fi
+        ;;
+esac

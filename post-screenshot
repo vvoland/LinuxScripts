@@ -1,5 +1,5 @@
 #!/bin/bash
-USAGE="post-scrot <filename> [noupload]"
+USAGE="post-screenshot <filename> [noupload]"
 [ -z "$1" ] && echo $USAGE && exit 1
 [ ! -f "$1" ] && echo "File $1 does not exist" && exit 2
 
