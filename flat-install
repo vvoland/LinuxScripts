@@ -9,7 +9,7 @@ function error()
 keyword=$1
 
 export LC_ALL=C
-output=$(flatpak search "$keyword" | head -n +2 | grep "$keyword")
+output=$(flatpak search "$keyword" | head -n +2 | grep -i "$keyword")
 count=$(echo "$output" | wc -l)
 
 if [[ $count -eq 0 || -z "$output" ]]
@@ -18,23 +18,28 @@ then
     exit 2
 elif [ $count -gt 1 ]
 then
-    echo "Keyword ambiguous. Multiple packages found:"
-    echo "$output"
-    exit 2
+    echo "Multiple packages found, choose one to install"
+    IFS=$'\n' readarray -t packages <<< "$output"
+    select output in "${packages[@]}"
+    do
+        break
+    done
+fi
+
+[ -z "$output" ] && error "Not doing anything" && exit 3
+
+package=$(echo "$output" | cut -f 1)
+version=$(echo "$output" | cut -f 2)
+repo=$(echo "$output" | cut -f 3)
+desc=$(echo "$output" | cut -f 4)
+
+echo "Found $package version $version in $repo"
+echo "Description: $desc"
+
+read -p "Install it? [y/N] " -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    flatpak install "$repo" "$package"
 else
-    package=$(echo "$output" | cut -f 1)
-    version=$(echo "$output" | cut -f 2)
-    repo=$(echo "$output" | cut -f 3)
-    desc=$(echo "$output" | cut -f 4)
-
-    echo "Found $package version $version in $repo"
-    echo "Description: $desc"
-
-    read -p "Install it? [y/N] " -n 1 -r
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-        flatpak install "$repo" "$package"
-    else
-        exit 0
-    fi
+    exit 0
 fi
