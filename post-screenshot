@@ -5,7 +5,8 @@ USAGE="post-screenshot <filename> [noupload]"
 
 if [ "$2" == "edit" ]
 then
-    gimp "$1"
+    [ -z "$SCREENSHOTS_EDITOR" ] && echo "\$SCREENSHOTS_EDITOR is not set!" && exit 3
+    "$SCREENSHOTS_EDITOR" "$1"
 fi
 
 if [ "$2" == "noupload" ]
