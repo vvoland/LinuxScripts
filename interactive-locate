@@ -1,0 +1,2 @@
+#!/bin/sh
+locate "$HOME" "/ext/" | rofi -threads 0 -dmenu -i -p "locate:" | xargs -r -0 xdg-open
